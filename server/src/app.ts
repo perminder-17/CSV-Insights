@@ -1,10 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { healthRouter } from './routes/health.js';
 import { reportsRouter } from './routes/reports.js';
 
-dotenv.config();
 
 export function createApp() {
   const app = express();
