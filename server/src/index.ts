@@ -22,15 +22,19 @@ app.use('/api', reportsRouter);
 app.use((req, res) => res.status(404).json({ error: `Not found: ${req.method} ${req.path}` }));
 
 
-if (!MONGODB_URI) {
-  console.error('Missing MONGODB_URI in .env');
-  process.exit(1);
-}
 
-await connectDb(MONGODB_URI);
 
 app.listen(PORT, () => {
   console.log(`Server running: http://localhost:${PORT}`);
   console.log(`Health: http://localhost:${PORT}/api/health`);
+  if (!MONGODB_URI) {
+    console.error('Missing MONGODB_URI in .env');
+    process.exit(1);
+  }
+  
+  connectDb(MONGODB_URI).catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
 });
 
