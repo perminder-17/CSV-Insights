@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { healthRouter } from './routes/health.js';
-import { reportsRouter } from './routes/reports.js';
+import { healthRouter } from './routes/health';
+import { reportsRouter } from './routes/reports';
 
 dotenv.config();
 
@@ -20,5 +20,5 @@ export function createApp() {
 
   app.use((req, res) => res.status(404).json({ error: `Not found: ${req.method} ${req.path}` }));
 
-  export default app;
+  return app;
 }
