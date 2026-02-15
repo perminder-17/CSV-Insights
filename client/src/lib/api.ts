@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
-const apiClient = axios.create()
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+})
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
