@@ -72,3 +72,12 @@ A small full-stack application that lets you upload a CSV, generates a lightweig
 ```bash
 cd server
 npm install
+
+---
+## 2) Frontend (client)
+
+```bash
+cd client
+npm install
+
+---
