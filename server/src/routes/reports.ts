@@ -72,7 +72,6 @@ reportsRouter.post('/reports', upload.single('file'), async (req, res) => {
 
 reportsRouter.post('/reports/:id/followups', async (req, res) => {
   const question = String(req.body?.question ?? '').trim();
-  console.log('Received follow-up question:', { question, reportId: req.params.id });
   if (!question) return res.status(400).json({ error: 'empty_question' });
 
 
