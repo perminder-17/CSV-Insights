@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { healthRouter } from './routes/health.js';
 import { reportsRouter } from './routes/reports.js';
 
 
-export function createApp() {
+function createApp() {
   const app = express();
 
   app.use(cors({ origin: '*', credentials: false }));
@@ -20,3 +21,5 @@ export function createApp() {
 
   return app;
 }
+
+export default createApp;
