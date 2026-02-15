@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FileJson, List, Heart } from 'lucide-react'
+import { FileJson, Heart } from 'lucide-react'
 
 export function Navbar() {
   return (

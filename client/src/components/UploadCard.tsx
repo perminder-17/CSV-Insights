@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Cloud, File } from 'lucide-react'
+import { Cloud } from 'lucide-react'
 import { clsx } from 'clsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card'
 import { Button } from './Button'
