@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+/*import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { AlertCircle, Loader, Send } from 'lucide-react'
 import { api, Followup } from '../lib/api'
@@ -11,7 +11,7 @@ export default function FollowupPanel({ reportId }: FollowupPanelProps) {
   const [followups, setFollowups] = useState<Followup[]>([])
   const [question, setQuestion] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [isFetching, setIsFetching] = useState(true)
+  //const [isFetching, setIsFetching] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -95,6 +95,119 @@ export default function FollowupPanel({ reportId }: FollowupPanelProps) {
           )}
         </button>
       </form>
+    </div>
+  )
+}
+*/
+import { useEffect, useState } from 'react'
+import { AlertCircle, Loader, Send } from 'lucide-react'
+import apiClient, { api, Followup } from '../lib/api'
+
+type FollowupPanelProps = {
+  reportId: string
+}
+
+export default function FollowupPanel({ reportId }: FollowupPanelProps) {
+  const [followups, setFollowups] = useState<Followup[]>([])
+  const [question, setQuestion] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!reportId) return
+
+    const fetchFollowups = async () => {
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const res = await apiClient.get(`/api/reports/${reportId}/followups`)
+        const list = Array.isArray(res.data) ? (res.data as Followup[]) : []
+        setFollowups(list)
+      } catch (err: any) {
+        // If your backend doesn't have GET followups, ignore 404
+        const status = err?.response?.status
+        if (status !== 404) {
+          const msg = err?.response?.data?.message || err?.message || 'Failed to load follow-ups'
+          setError(msg)
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchFollowups()
+  }, [reportId])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const q = question.trim()
+    if (!q) return
+
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      const created = await api.addFollowup(reportId, q)
+      setFollowups((prev) => [created, ...prev])
+      setQuestion('')
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || 'Failed to submit follow-up'
+      setError(msg)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="bg-slate-900/50 rounded-lg border border-slate-800 p-6 space-y-4">
+      <h2 className="text-xl font-bold text-white">Follow-up Questions</h2>
+
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask a follow-up..."
+          className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+        <button
+          type="submit"
+          disabled={isSubmitting || !question.trim()}
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        >
+          {isSubmitting ? <Loader className="animate-spin" size={18} /> : <Send size={18} />}
+          Ask
+        </button>
+      </form>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 flex gap-2 items-start">
+          <AlertCircle className="text-red-500 mt-0.5" size={18} />
+          <p className="text-red-200 text-sm">{error}</p>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 text-slate-400 text-sm">
+          <Loader className="animate-spin" size={16} />
+          Loading follow-ups...
+        </div>
+      ) : followups.length === 0 ? (
+        <p className="text-slate-400 text-sm">No follow-ups yet.</p>
+      ) : (
+        <div className="space-y-3">
+          {followups.map((f) => (
+            <div key={f.id} className="bg-slate-950/40 border border-slate-800 rounded-lg p-4">
+              <p className="text-slate-200 font-medium">Q: {f.question}</p>
+              <p className="text-slate-300 mt-2">A: {f.answer}</p>
+              <p className="text-slate-500 text-xs mt-2">
+                {new Date(f.createdAt).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
