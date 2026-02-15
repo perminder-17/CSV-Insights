@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 import { Router } from 'express';
 import multer from 'multer';
 import Papa from 'papaparse';
-import { Report } from '../models/Report';
-import { profileCsv } from '../lib/csvProfile';
-import { heuristicInsights } from '../lib/insights';
+import { Report } from '../models/Report.js';
+import { profileCsv } from '../lib/csvProfile.js';
+import { heuristicInsights } from '../lib/insights.js';
 import { llmAnswer } from '../services/llm/index.js';
 
 export const reportsRouter = Router();

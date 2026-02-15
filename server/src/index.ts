@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { createApp } from './app';
-import { connectDb } from './db';
+import { createApp } from './app.js';
+import { connectDb } from './db.js';
 
 async function main() {
   const app = createApp();
